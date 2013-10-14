@@ -1,0 +1,15 @@
+# ignore some stuff
+# no compiled files
+*.pyc
+# editor swapfiles
+*.swp
+.idea/
+
+# logfiles
+*.log
+
+# personal tests that I'm working with
+tinker/
+
+# python virtual environment
+venv/

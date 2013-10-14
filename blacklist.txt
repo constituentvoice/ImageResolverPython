@@ -1,0 +1,11 @@
+!just a few samples. Don't use this for serious work.
+-ad-
+-google-ads/
+-google2-ad-
+-pop-under/
+-popexit.
+-popunder.
+-popup-ad.
+-popup-ads-
+-publicidad.
+-Results-Sponsored.
