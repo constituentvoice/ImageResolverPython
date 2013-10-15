@@ -1,0 +1,3 @@
+[submodule "imageresolver/abpy"]
+	path = imageresolver/abpy
+	url = https://github.com/chrisbrownnwyc/abpy.git
