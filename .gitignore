@@ -13,3 +13,6 @@ tinker/
 
 # python virtual environment
 venv/
+
+#build files
+build/
