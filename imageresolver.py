@@ -237,7 +237,7 @@ class WebpageResolver():
 		
 		if kwargs.get('debug'):
 			for c in candidates:
-				print c.get('url') + ' surface: ' + str(c.get('surface')) + ' score: ' + str(c.get('store'))
+				print c.get('url') + ' surface: ' + str(c.get('surface')) + ' score: ' + str(c.get('score'))
 
 		image = candidates[0].get('url')
 
