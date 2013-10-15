@@ -2,7 +2,7 @@ import sys
 import unittest
 import requests
 from os.path import dirname,abspath
-sys.path.append( dirname( dirname( abspath(__file__)) ) )
+sys.path.append( dirname( dirname( dirname( abspath(__file__)) ) ) )
 from imageresolver import ImageResolver, FileExtensionResolver, ImgurPageResolver, WebpageResolver
 
 class TestImageResolver(unittest.TestCase):

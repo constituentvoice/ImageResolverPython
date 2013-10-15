@@ -22,8 +22,9 @@ if not module_path:
 
 sys.path.append(module_path)
 
-from abpy import abpy
-import getimageinfo
+from .abpy import abpy
+from . import getimageinfo
+
 
 class HTTPException(Exception):
 	pass
