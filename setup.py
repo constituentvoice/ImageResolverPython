@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup(
 	name='ImageResolver',
-	version='0.1.1',
+	version='0.1.2',
 	author='Chris Brown',
 	author_email='chris.brown@nwyc.com',
 	packages=['imageresolver','imageresolver.test','imageresolver.abpy'],

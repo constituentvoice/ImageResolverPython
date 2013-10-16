@@ -32,7 +32,7 @@ WebpageResolver Additions
 Webpage Resolver options
 ------------------------
 
-Options to pass to the webpage resolver. Default values are shown.
+Options to pass to the webpage resolver. Default values are shown::
 	
 	# set to true to load the first 1k of images whose size is not set in HTML
 	load_images=False
@@ -81,6 +81,8 @@ I have no plans to implement a 9gag resolver.
 
 USAGE
 -----
+
+::
 
 	import imageresolver
 	import sys
