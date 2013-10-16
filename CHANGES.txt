@@ -1,1 +1,2 @@
 v0.1, 2013-10-15 -- Initial Release
+v0.1.1, 2013-10-15 -- Cleaned up readme. 

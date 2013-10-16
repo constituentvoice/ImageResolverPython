@@ -9,17 +9,24 @@ Differences From the Javascript Version
 ---------------------------------------
 
 * methods return instead of calling callbacks
+
 * WebpageResolver has lots of new options (see below)
+
 * Added some debugging features
+
 * Exceptions are raised rather than callback to an error function
 
 WebpageResolver Additions
 -------------------------
 
 * rules syntax is now based on AdBlockPlus filters (https://adblockplus.org/en/filters)
+
 * New rules can be added without writing a resolver
+
 * blacklist image sources and whitelist
+
 * Can load the first 1k of images found in the page to determine dimensions if the attributes are not includes
+
 * The original rules from the JS version are still implemented. (see options)
 
 Webpage Resolver options
@@ -54,15 +61,20 @@ Currently Implemented Resolvers
 -------------------------------
 
 * FileExtensionResolver()
+
 * ImgurPageResolver()
+
 * WebpageResolver()
 
 To Be Implemented
 -----------------
 
 * ImgurAlbumResolver()
+
 * FlickrResolver()
+
 * OpengraphResolver()
+
 * InstagramResolver()
 
 I have no plans to implement a 9gag resolver.
