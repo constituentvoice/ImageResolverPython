@@ -1,6 +1,4 @@
 import sys
-from os.path import dirname,abspath
-sys.path.append( dirname( dirname( abspath(__file__)) ) )
 import imageresolver
 
 i = imageresolver.ImageResolver()

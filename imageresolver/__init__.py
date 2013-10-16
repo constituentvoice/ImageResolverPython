@@ -119,8 +119,8 @@ class WebpageResolver():
 			cwd = '.'
 
 		self.parser = kwargs.get('parser','html.parser') # default html.parser is built-in but lots of failure. lxml is recommended
-		self.blacklist = kwargs.get('blacklist', cwd + '/blacklist.txt')
-		self.whitelist = kwargs.get('whitelist', cwd + '/whitelist.txt')
+		self.blacklist = kwargs.get('blacklist', os.path.join(cwd,'data', 'blacklist.txt'))
+		self.whitelist = kwargs.get('whitelist', os.path.join(cwd,'data', 'whitelist.txt'))
 		if self.use_adblock_filters:
 			self.abpy_black = abpy.Filter(open(self.blacklist))
 			self.abpy_white = abpy.Filter(open(self.whitelist))
