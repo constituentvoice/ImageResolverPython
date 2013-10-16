@@ -5,7 +5,7 @@ setup(
 	version='0.1.0',
 	author='Chris Brown',
 	author_email='chris.brown@nwyc.com',
-	packages=['imageresolver','imageresolver.test','imageresolver.abpy'],
+	packages=['imageresolver','imageresolver.test','imageresolver.abpy','beautifulsoup4'],
 	scripts=['bin/example.py'],
 	url='https://github.com/chrisbrownnwyc/ImageResolverPython',
 	license='LICENSE.txt',
