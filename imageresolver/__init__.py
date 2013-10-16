@@ -209,14 +209,14 @@ class WebpageResolver():
 				# differece: The JS library's default surface is 0. Ours is 1
 				# it shouldn't matter
 
-				width = i.get('width',1)
-				height = i.get('height',1)
+				width = i.get('width',"1")
+				height = i.get('height',"1")
 
 				if re.search('[A-Za-z]+',width):
-					width = re.replace('[A-Za-z]+','',width)
+					width = re.sub('[A-Za-z]+','',width)
 
 				if re.search('[A-Za-z]+',height):
-					height = re.replace('[A-Za-z]+','',height)
+					height = re.sub('[A-Za-z]+','',height)
 
 				try:
 					width = int(width)
