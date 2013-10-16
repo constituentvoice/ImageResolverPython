@@ -1,3 +1,7 @@
 v0.1, 2013-10-15 -- Initial Release
 v0.1.1, 2013-10-15 -- Cleaned up readme. 
 v0.1.2, 2013-10-15 -- I suck at rst format
+v0.1.3, 2013-10-16 -- 
+	* fixed data files missing from the installed package
+	* fixed things like "px" in width and height attributes causing a crash
+	* renamed example.py to resolveimg.py
