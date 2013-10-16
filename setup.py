@@ -8,8 +8,8 @@ setup(
 	packages=['imageresolver','imageresolver.test','imageresolver.abpy'],
 	scripts=['bin/example.py'],
 	url='https://github.com/chrisbrownnwyc/ImageResolverPython',
-	license='LICENSE.txt',
+	license='BSD',
 	description="Find the most significant image in an article.",
-	long_description=open('README.md').read(),
+	long_description=open('README.txt').read(),
 	install_requires=[ "requests >= 1.0.0","beautifulsoup4" ],
 )
