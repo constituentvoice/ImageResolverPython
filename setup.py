@@ -9,7 +9,7 @@ setup(
 	author_email='chris.brown@nwyc.com',
 	packages=['imageresolver','imageresolver.test','imageresolver.abpy'],
 	data_files=[(os.path.join( get_python_lib(),'imageresolver','data'),[ os.path.join('imageresolver','data','whitelist.txt') , os.path.join('imageresolver','data','blacklist.txt')])],
-	scripts=['bin/example.py'],
+	scripts=['bin/resolveimg.py'],
 	url='https://github.com/chrisbrownnwyc/ImageResolverPython',
 	license='BSD',
 	description="Find the most significant image in an article.",
