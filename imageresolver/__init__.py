@@ -208,7 +208,24 @@ class WebpageResolver():
 			if score >= 0:
 				# differece: The JS library's default surface is 0. Ours is 1
 				# it shouldn't matter
-				surface = int(i.get('width',1)) * int(i.get('height',1))
+
+				width = i.get('width',1)
+				height = i.get('height',1)
+
+				if re.search('[A-Za-z]+',width):
+					width = re.replace('[A-Za-z]+','',width)
+
+				if re.search('[A-Za-z]+',height):
+					height = re.replace('[A-Za-z]+','',height)
+
+				try:
+					width = int(width)
+					height = int(height)
+				except ValueError:
+					width = 1
+					height = 1
+
+				surface = width * height
 
 				# try to obtain the size from the headers of the image
 				if surface < 2 and self.load_images:
