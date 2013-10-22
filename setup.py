@@ -4,7 +4,7 @@ import os
 
 setup(
 	name='ImageResolver',
-	version='0.1.3',
+	version='0.1.4',
 	author='Chris Brown',
 	author_email='chris.brown@nwyc.com',
 	packages=['imageresolver','imageresolver.test','imageresolver.abpy'],

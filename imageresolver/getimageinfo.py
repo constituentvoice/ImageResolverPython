@@ -40,8 +40,8 @@ def getImageInfo(data):
         jpeg = StringIO.StringIO(data)
         jpeg.read(2)
         b = jpeg.read(1)
-		width = None
-		height = None
+        width = None
+        height = None
         try:
             while (b and ord(b) != 0xDA):
                 while (ord(b) != 0xFF): b = jpeg.read(1)
@@ -59,7 +59,7 @@ def getImageInfo(data):
             pass
         except ValueError:
             pass
-		except NameError:
+        except NameError:
 			#sometimes w,h isn't being set in jpgs
 			pass
 			
