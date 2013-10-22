@@ -5,3 +5,12 @@ v0.1.3, 2013-10-16 --
 	* fixed data files missing from the installed package
 	* fixed things like "px" in width and height attributes causing a crash
 	* renamed example.py to resolveimg.py
+
+v0.1.4, 2013-10-22 --
+    * WARNING BROKEN RELEASE
+	* fixed characters other than numbers w,h attributes causing crash
+	* attempted fix an exception with some jpg files (broken release)
+	
+v0.1.5, 2013-10-22 --
+	* Fixed indent error introduced in 0.1.4
+	* fixed exception when processing some jpg files
