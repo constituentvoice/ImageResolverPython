@@ -212,11 +212,11 @@ class WebpageResolver():
 				width = i.get('width',"1")
 				height = i.get('height',"1")
 
-				if re.search('[A-Za-z]+',width):
-					width = re.sub('[A-Za-z]+','',width)
+				if re.search('\D+',width):
+					width = re.sub('\D+','',width)
 
-				if re.search('[A-Za-z]+',height):
-					height = re.sub('[A-Za-z]+','',height)
+				if re.search('\D+',height):
+					height = re.sub('\D+','',height)
 
 				try:
 					width = int(width)
