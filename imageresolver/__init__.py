@@ -223,8 +223,8 @@ class WebpageResolver():
 				if not re.search('^https?:\/\/',src):
 					# url parse doesn't recognize data: as valid
 					if re.search('^data:', src):
-						# data urls are almost certainly not going to be a significant image
-						score = -10
+						# skip data urls
+						continue
 					else:
 						parts = urlparse(url)
 					
