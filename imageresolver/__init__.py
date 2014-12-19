@@ -14,6 +14,9 @@ import os.path
 import operator
 from bs4 import BeautifulSoup
 import sys
+import logging
+
+logger = logging.getLogger('ImageResolver')
 
 # add the vendor directories to our path
 module_path = os.path.dirname(__file__)
@@ -36,11 +39,16 @@ class ImageResolver():
 		self.cache = {}
 		self.debug = kwargs.get('debug',False)
 
+		if self.debug:
+			logger.setLevel(logging.DEBUG)
+
 	def fetch(self,url):
 		cache = self.cache
 		if cache.get(url):
+			logger.debug('Loading ' + str(url) + ' from cache')
 			return cache.get(url)
 		else:
+			logger.debug('Loading ' + str(url))
 			resp = requests.get(url)
 			if resp.status_code == 200:
 				cache[url] = resp.text
@@ -49,14 +57,18 @@ class ImageResolver():
 				raise HTTPException(resp)
 
 	def fetch_image_info(self,url):
+		logger.debug('Fetching raw image info ' + str(url) )
 		r = requests.get(url,stream=True)
 		if r.status_code == 200:
 			imgheader = None
 			for chunk in r.iter_content(1024):
 				imgheader = chunk
+				r.close()
 				break
 			
 			(content, width, height) = getimageinfo.getImageInfo(imgheader)
+			logger.debug( 'Detected ' + str(content) + ' ' + str(width) + 'x' + str(height) )
+
 			ext = None
 			if content == 'image/png':
 				ext = '.png'
@@ -66,6 +78,9 @@ class ImageResolver():
 				ext = '.jpg'
 
 			return ext,width,height
+		else:
+			logger.debug('Fetch failed with status code ' + str(r.status_code))
+
 		return None,None,None
 
 
@@ -80,6 +95,7 @@ class ImageResolver():
 	# instead of using next() we just loop through the filters
 	# until we find one that returns
 	def resolve(self,url):
+		logger.debug('Attempting to resolve ' + str(url))
 		for f in self.filters:
 			resp = f.resolve(url,debug=self.debug)
 			
@@ -89,6 +105,7 @@ class ImageResolver():
 
 class FileExtensionResolver():
 	def resolve(self,url,**kwargs):
+		logger.debug('Resolving using file extension ' + str(url))
 		parsed = urlparse(url)
 		path = parsed.path
 		
@@ -102,6 +119,7 @@ class ImgurPageResolver():
 	# it should drop references to galleries and find the image
 	# could be buggy!
 	def resolve(self,url,**kwargs):
+		logger.debug('Resolving using Imgur ' + str(url))
 		parsed = urlparse(url)
 		if re.search( 'imgur.com(:80)*', parsed.netloc) and os.path.basename(parsed.path):
 			return 'http://i.imgur.com/' + os.path.basename(parsed.path) + '.jpg'
@@ -154,6 +172,8 @@ class WebpageResolver():
 				if re.search( r.get('pattern'), src, re.I ):
 					score += r.get('score')
 
+			logger.debug('score set to ' + str(score) + ' using JS filters')
+
 		if self.use_adblock_filters:
 			# just detect ads using AdBlockPlus filters (default)
 			black_matches = self.abpy_black.match(src)
@@ -171,9 +191,13 @@ class WebpageResolver():
 				if not score:
 					score = 0
 
+			logger.debug('score set to ' + str(score) + ' using ABP filters')
+
 		return score
 
 	def resolve(self,url,**kwargs):
+		logger.debug('Resolving as a webpage ' + str(url))
+
 		ir = ImageResolver()
 		content = ir.fetch(url)
 		soup = BeautifulSoup(content,self.parser)
@@ -183,13 +207,18 @@ class WebpageResolver():
 		significant_surface = 16*16
 		significant_surface_count = 0
 		src = None
-		surface = None
+
+		logger.debug('Found ' + str( len(images) ) + ' candidate images')
 
 		for i in images:
+			surface = 0
 			src = i.get('src',i.get('data-src', i.get('data-lazy-src')))
 			if not src:
+				logger.debug('No source found. Skipping')
 				continue
 			else:
+				logger.debug('Checking ' + str(src))
+
 				# get the absolute path to the image
 				if not re.search('^https?:\/\/',src):
 					parts = urlparse(url)
@@ -200,12 +229,14 @@ class WebpageResolver():
 						path = os.path.dirname(parts.path)
 						src = parts.scheme + '://' + parts.netloc + path + '/' + src
 
+				logger.debug('Parsed full url as ' + str(src))
 				i['src'] = src # forces setting it to whatever we found so we don't parse it in _score()
 
 			# get the score first since getting the surface is potentially more intensive now
 			score = self._score(i)
 			
 			if score >= 0:
+				logger.debug('Image has a score, checking size')
 				# differece: The JS library's default surface is 0. Ours is 1
 				# it shouldn't matter
 
@@ -221,22 +252,31 @@ class WebpageResolver():
 				try:
 					width = int(width)
 					height = int(height)
+					logger.debug('detected dimensions ' + str(width) + 'x' + str(height))
+
 				except ValueError:
 					width = 1
 					height = 1
+					logger.debug( 'no html diminsions detected' )
 
 				surface = width * height
 
+				logger.debug('set surface to ' + str(surface) )
+
 				# try to obtain the size from the headers of the image
 				if surface < 2 and self.load_images:
+					logger.debug('surface was too small. Attempting to load image')
 					(ext,width,height) = ir.fetch_image_info(src)
 					if ext:
 						surface = width * height
+						logger.debug('new surface is ' + str(surface) )
+					else:
+						logger.debug('No usable info from image')
 
 				if surface > significant_surface:
 					significant_surface_count += 1
 
-				score = self._score(i)
+				#score = self._score(i) # Why was this here???
 				
 				candidates.append({
 					'url': src,
@@ -255,7 +295,7 @@ class WebpageResolver():
 		
 		if kwargs.get('debug'):
 			for c in candidates:
-				print c.get('url') + ' surface: ' + str(c.get('surface')) + ' score: ' + str(c.get('score'))
+				logger.debug(c.get('url') + ' surface: ' + str(c.get('surface')) + ' score: ' + str(c.get('score')))
 
 		image = candidates[0].get('url')
 
