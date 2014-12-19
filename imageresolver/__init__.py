@@ -221,13 +221,18 @@ class WebpageResolver():
 
 				# get the absolute path to the image
 				if not re.search('^https?:\/\/',src):
-					parts = urlparse(url)
-					
-					if src[0] == '/':
-						src = parts.scheme + '://' + parts.netloc + src
+					# url parse doesn't recognize data: as valid
+					if re.search('^data:', src):
+						# data urls are almost certainly not going to be a significant image
+						score = -10
 					else:
-						path = os.path.dirname(parts.path)
-						src = parts.scheme + '://' + parts.netloc + path + '/' + src
+						parts = urlparse(url)
+					
+						if src[0] == '/':
+							src = parts.scheme + '://' + parts.netloc + src
+						else:
+							path = os.path.dirname(parts.path)
+							src = parts.scheme + '://' + parts.netloc + path + '/' + src
 
 				logger.debug('Parsed full url as ' + str(src))
 				i['src'] = src # forces setting it to whatever we found so we don't parse it in _score()
@@ -236,12 +241,14 @@ class WebpageResolver():
 			score = self._score(i)
 			
 			if score >= 0:
-				logger.debug('Image has a score, checking size')
+				logger.debug('Image has a score, ' + str(score) + ' checking size')
 				# differece: The JS library's default surface is 0. Ours is 1
 				# it shouldn't matter
 
-				width = i.get('width',"1")
-				height = i.get('height',"1")
+				# Edit: it matters because there's no reason to download 1x1 gifs
+
+				width = i.get('width',"0")
+				height = i.get('height',"0")
 
 				if re.search('\D+',width):
 					width = re.sub('\D+','',width)
@@ -252,11 +259,20 @@ class WebpageResolver():
 				try:
 					width = int(width)
 					height = int(height)
+
+					# if we found diminsions and one of them was 0 or null then
+					# go ahead and set it to 1 to ensure there is a surface
+					if width == 0 and height > 0:
+						width = 1
+					elif height == 0 and width > 0:
+						height = 1
+
 					logger.debug('detected dimensions ' + str(width) + 'x' + str(height))
 
+
 				except ValueError:
-					width = 1
-					height = 1
+					width = 0
+					height = 0
 					logger.debug( 'no html diminsions detected' )
 
 				surface = width * height
@@ -264,7 +280,7 @@ class WebpageResolver():
 				logger.debug('set surface to ' + str(surface) )
 
 				# try to obtain the size from the headers of the image
-				if surface < 2 and self.load_images:
+				if surface < 1 and self.load_images:
 					logger.debug('surface was too small. Attempting to load image')
 					(ext,width,height) = ir.fetch_image_info(src)
 					if ext:
