@@ -1,8 +1,8 @@
 """
-ImageResolver.py
-Copyright 2013 National Write Your Congressman
+ImageResolver
+Copyright 2014 Constituent Voice 
 
-ImageResolver.py is a port of the excellent ImageResolver
+ImageResolver is a port of the excellent ImageResolver
 javascript library by Maurice Svay
 https://github.com/mauricesvay/ImageResolver
 """
@@ -38,7 +38,7 @@ class HTTPException(Exception):
 class ImageInfoException(Exception):
 	pass
 
-class ImageResolver():
+class ImageResolver(object):
 	
 	def __init__(self,**kwargs):
 		self.filters = [];
@@ -52,7 +52,6 @@ class ImageResolver():
 
 		# read the entire image before trying to get its information
 		self.read_all = kwargs.get('read_all',False)
-		
 
 		if self.debug:
 			logger.setLevel(logging.DEBUG)
@@ -137,7 +136,7 @@ class ImageResolver():
 			if resp:
 				return resp
 
-class FileExtensionResolver():
+class FileExtensionResolver(object):
 	def resolve(self,url,**kwargs):
 		logger.debug('Resolving using file extension ' + str(url))
 		parsed = urlparse(url)
@@ -148,7 +147,7 @@ class FileExtensionResolver():
 
 		return None
 
-class ImgurPageResolver():
+class ImgurPageResolver(object):
 	# works a little different than the JS version. 
 	# it should drop references to galleries and find the image
 	# could be buggy!
@@ -160,7 +159,7 @@ class ImgurPageResolver():
 
 		return None
 
-class WebpageResolver():
+class WebpageResolver(object):
 	def __init__(self,**kwargs):
 		self.load_images = kwargs.get('load_images',False)
 		self.use_js_ruleset = kwargs.get('use_js_ruleset',False)

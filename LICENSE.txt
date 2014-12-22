@@ -1,4 +1,4 @@
-Copyright (c) 2013, National Write Your Congressman
+Copyright (c) 2014, Constituent Voice, LLC.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without modification,
