@@ -57,4 +57,5 @@ v0.2.0, 2014-12-22 --
 		- _score was called multiple times when it shouldn't have been
 		- connections were not explicitly closed which caused performance
 		  issues
+		- Fixed URLs specified without protocol
 	- Removed README.md and moved README.txt to README.rst.

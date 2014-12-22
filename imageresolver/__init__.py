@@ -1,6 +1,8 @@
 """
 ImageResolver
-Copyright 2014 Constituent Voice 
+Copyright 2014 Constituent Voice LLC
+http://constituentvoice.com/
+http://github.com/constituentvoice
 
 ImageResolver is a port of the excellent ImageResolver
 javascript library by Maurice Svay
@@ -115,7 +117,7 @@ class ImageResolver(object):
 			return ext,width,height
 		else:
 			logger.debug('Fetch failed with status code ' + str(r.status_code))
-			raise HTTPException('Fetch image failed with status code ' + str(r.status_code))
+			raise HTTPException('Fetch image %s failed with status code %d' % (url,r.status_code))
 
 	
 	def register(self,f):
@@ -251,6 +253,9 @@ class WebpageResolver(object):
 		src_cache = {}
 
 		logger.debug('Found ' + str( len(images) ) + ' candidate images')
+	
+		# get url parts for building image srcs
+		parts = urlparse(url)
 
 		for i in images:
 			surface = 0
@@ -269,10 +274,13 @@ class WebpageResolver(object):
 						# skip data urls
 						continue
 					else:
-						parts = urlparse(url)
 					
 						if src[0] == '/':
-							src = parts.scheme + '://' + parts.netloc + src
+							# check protocol-less urls
+							if src[1] == '/':
+								src = parts.scheme + ':' + src
+							else:
+								src = parts.scheme + '://' + parts.netloc + src
 						else:
 							path = os.path.dirname(parts.path)
 							src = parts.scheme + '://' + parts.netloc + path + '/' + src
