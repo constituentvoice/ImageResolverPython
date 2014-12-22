@@ -173,6 +173,11 @@ class WebpageResolver():
 		self.parser = kwargs.get('parser','html.parser') # default html.parser is built-in but lots of failure. lxml is recommended
 		self.blacklist = kwargs.get('blacklist', os.path.join(cwd,'data', 'blacklist.txt'))
 		self.whitelist = kwargs.get('whitelist', os.path.join(cwd,'data', 'whitelist.txt'))
+
+		self.boost_jpeg = kwargs.get('boost_jpeg', 1)
+		self.boost_gif = kwargs.get('boost_gif', 0)
+		self.boost_png = kwargs.get('boost_png', 0)
+
 		if self.use_adblock_filters:
 			self.abpy_black = abpy.Filter(open(self.blacklist))
 			self.abpy_white = abpy.Filter(open(self.whitelist))
@@ -302,16 +307,14 @@ class WebpageResolver():
 						height = 1
 
 					logger.debug('detected dimensions ' + str(width) + 'x' + str(height))
-
+					surface = width * height
+					logger.debug('set surface to ' + str(surface) )
 
 				except ValueError:
 					width = 0
 					height = 0
 					logger.debug( 'no html diminsions detected' )
 
-				surface = width * height
-
-				logger.debug('set surface to ' + str(surface) )
 
 				# try to obtain the size from the headers of the image
 				if surface < 1 and self.load_images:
@@ -329,6 +332,13 @@ class WebpageResolver():
 					if ext:
 						surface = width * height
 						logger.debug('new surface is ' + str(surface) )
+						
+						if self.boost_jpeg and ext == '.jpg':
+							score += self.boost_jpeg
+						elif self.boost_gif and ext == '.gif':
+							score += self.boost_gif
+						elif self.boost_png and ext == '.png':
+							score += self.boost_png
 					else:
 						logger.debug('No usable info from image')
 
