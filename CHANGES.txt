@@ -2,15 +2,59 @@ v0.1, 2013-10-15 -- Initial Release
 v0.1.1, 2013-10-15 -- Cleaned up readme. 
 v0.1.2, 2013-10-15 -- I suck at rst format
 v0.1.3, 2013-10-16 -- 
-	* fixed data files missing from the installed package
-	* fixed things like "px" in width and height attributes causing a crash
-	* renamed example.py to resolveimg.py
+	- fixed data files missing from the installed package
+	- fixed things like "px" in width and height attributes causing a crash
+	- renamed example.py to resolveimg.py
 
 v0.1.4, 2013-10-22 --
-    * WARNING BROKEN RELEASE
-	* fixed characters other than numbers w,h attributes causing crash
-	* attempted fix an exception with some jpg files (broken release)
+    - WARNING BROKEN RELEASE
+	- fixed characters other than numbers w,h attributes causing crash
+	- attempted fix an exception with some jpg files (broken release)
 	
 v0.1.5, 2013-10-22 --
-	* Fixed indent error introduced in 0.1.4
-	* fixed exception when processing some jpg files
+	- Fixed indent error introduced in 0.1.4
+	- fixed exception when processing some jpg files
+
+v0.2.0, 2014-12-22 --
+	- Some jpg images did not have enough data to properly set the width and
+	  height of the image. This lead to exceptions. Now system continue tries
+	  to read up to max_read_size bytes to find the proper width and height
+	  info
+	- Exceptions when loading images are caught and logged by default. Pass
+	  skip_fetch_errors=False to raise exceptions
+	- Added boost_ options to file types. Add (int) value to the score of
+	  particular file extensions. These options add value to the score only when 
+	  checking images directly. If a file is already blacklisted the 
+	  additional score does not get added. The value can also be negative to
+	  drop the score of certain files.
+	- Changed significance logic. Surface calculation adds to score in
+	  multiples of the significant_surface variable (now added as an option to
+	  WebpageResolver)
+	- Removed additional sorting by score. As images are processed the highest
+	  score is held and that image is used. (performance)
+	- Added options to global ImageResolver:
+		- max_read_size: max number of bytes of an image to read (default
+		  10240 or 10 K)
+		- read_all: ignore max read size and load the entire image before
+		  detecting properties
+		- chunk_size: size of bytes to read at a time (default 1024)
+		- skip_fetch_errors: If True, skips and logs errors received while
+		  fetching or reading image info. (default True)
+		- debug: Enable debugging
+		- boost_jpeg: Adds a scoring boost to JPG files (default 1)
+		- boost_gif: Adds a scoring boost to GIF files (default 0)
+		- boost_png: Adds a scoring boost to PNG files (default 0)
+	- Added options to WebpageResolver
+		- significant_surface: integer of the width and height multiplied
+		  (e.g. 16 * 16) (default: 10000)
+	- Added a logger "ImageResolver"
+	- Added __version__ to the module
+	- Added command line options to resolveimg.py for debugging and
+	  controlling the chunk sizes
+	- Fixed some bugs
+		- "data:" URLs caused an exception. Changed to ignore "data:" URLs as
+		  they are unlikely to be significant images.
+		- _score was called multiple times when it shouldn't have been
+		- connections were not explicitly closed which caused performance
+		  issues
+	- Removed README.md and moved README.txt to README.rst.
