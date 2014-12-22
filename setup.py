@@ -14,6 +14,6 @@ setup(
 	url='https://github.com/chrisbrownnwyc/ImageResolverPython',
 	license='BSD',
 	description="Find the most significant image in an article.",
-	long_description=open('README.txt').read(),
+	long_description=open('README.rst').read(),
 	install_requires=[ "requests >= 1.0.0","beautifulsoup4" ],
 )
