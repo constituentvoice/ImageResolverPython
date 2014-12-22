@@ -17,6 +17,7 @@ import sys
 import logging
 
 logger = logging.getLogger('ImageResolver')
+__version__ = "0.2.0"
 
 # add the vendor directories to our path
 module_path = os.path.dirname(__file__)
@@ -28,8 +29,12 @@ sys.path.append(module_path)
 from .abpy import abpy
 from . import getimageinfo
 
-
+# raised if a resource could not be loaded
 class HTTPException(Exception):
+	pass
+
+# raised if getimageinfo returns null or otherwise unrecognizable
+class ImageInfoException(Exception):
 	pass
 
 class ImageResolver():
@@ -38,6 +43,16 @@ class ImageResolver():
 		self.filters = [];
 		self.cache = {}
 		self.debug = kwargs.get('debug',False)
+		# how much should I try to read of an image before giving up and returning nothing
+		self.max_read = kwargs.get('max_read_size',10240)
+
+		# size of chunk to read
+		self.chunk_size = kwargs.get('chunk_size',1024)
+
+		# read the entire image before trying to get its information
+		self.read_all = kwargs.get('read_all',False)
+		
+		self.skip_fetch_errors = kwargs.get('skip_fetch_errors',True)
 
 		if self.debug:
 			logger.setLevel(logging.DEBUG)
@@ -60,13 +75,31 @@ class ImageResolver():
 		logger.debug('Fetching raw image info ' + str(url) )
 		r = requests.get(url,stream=True)
 		if r.status_code == 200:
-			imgheader = None
-			for chunk in r.iter_content(1024):
-				imgheader = chunk
+			imgheader = b''
+			found = False
+			read = 0
+
+			for chunk in r.iter_content(self.chunk_size):
+				read += self.chunk_size
+				imgheader += chunk
+				if not self.read_all:
+					(content, width, height) = getimageinfo.getImageInfo(imgheader)
+					if content and width and height:
+						found = True
+						break
+
+					# break if we've read enough
+					if self.max_read > -1 and read >= self.max_read:
+						break
+
+			r.close() # close the connection
+
+			if self.read_all:
+				(content, width, height) = getimageinfo.getImageInfo(imgheader)
+				found = True
 				r.close()
-				break
-			
-			(content, width, height) = getimageinfo.getImageInfo(imgheader)
+
+
 			logger.debug( 'Detected ' + str(content) + ' ' + str(width) + 'x' + str(height) )
 
 			ext = None
@@ -76,13 +109,14 @@ class ImageResolver():
 				ext = '.gif'
 			elif content == 'image/jpeg':
 				ext = '.jpg'
+			
+			if not found or not ext:
+				raise ImageInfoException('getimageinfo() could not detect the image attributes properly')
 
 			return ext,width,height
 		else:
 			logger.debug('Fetch failed with status code ' + str(r.status_code))
-
-		return None,None,None
-
+			raise HTTPException('Fetch image failed with status code ' + str(r.status_code)
 
 	
 	def register(self,f):
@@ -282,7 +316,16 @@ class WebpageResolver():
 				# try to obtain the size from the headers of the image
 				if surface < 1 and self.load_images:
 					logger.debug('surface was too small. Attempting to load image')
-					(ext,width,height) = ir.fetch_image_info(src)
+					try:
+						(ext,width,height) = ir.fetch_image_info(src)
+					except (HTTPException, ImageInfoException) as e:
+						if self.skip_fetch_errors:
+							logger.error( repr(e) )
+							# ignore this one and move on
+							continue
+						else:
+							raise
+
 					if ext:
 						surface = width * height
 						logger.debug('new surface is ' + str(surface) )
@@ -291,8 +334,6 @@ class WebpageResolver():
 
 				if surface > significant_surface:
 					significant_surface_count += 1
-
-				#score = self._score(i) # Why was this here???
 				
 				candidates.append({
 					'url': src,
