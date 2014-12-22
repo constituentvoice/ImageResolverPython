@@ -16,3 +16,7 @@ venv/
 
 #build files
 build/
+
+#python dist files
+dist/
+MANIFEST
