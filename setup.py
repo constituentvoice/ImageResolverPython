@@ -5,7 +5,7 @@ from imageresolver import __version__
 
 setup(
 	name='ImageResolver',
-	version=__version__
+	version=__version__,
 	author='Chris Brown',
 	author_email='chris.brown@nwyc.com',
 	packages=['imageresolver','imageresolver.test','imageresolver.abpy'],
