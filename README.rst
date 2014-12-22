@@ -165,7 +165,7 @@ Probably. Send us an email or a patch if you find one
 COPYRIGHT / ACKNOWLEDGEMENTS
 ----------------------------
 
-(c) 2014 Constituent Voice, LLC.
+Copyright (c) 2014 Constituent Voice, LLC.
 
 Original idea and basic setup came from Maurice Svay https://github.com/mauricesvay/ImageResolver
 
