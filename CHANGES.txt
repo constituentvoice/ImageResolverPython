@@ -21,7 +21,7 @@ v0.2.0, 2014-12-22 --
 	  to read up to max_read_size bytes to find the proper width and height
 	  info
 	- Exceptions when loading images are caught and logged by default. Pass
-	  skip_fetch_errors=False to raise exceptions
+	  skip_fetch_errors=False to WebpageResolver to raise exceptions
 	- Added boost_ options to file types. Add (int) value to the score of
 	  particular file extensions. These options add value to the score only when 
 	  checking images directly. If a file is already blacklisted the 
@@ -38,8 +38,6 @@ v0.2.0, 2014-12-22 --
 		- read_all: ignore max read size and load the entire image before
 		  detecting properties
 		- chunk_size: size of bytes to read at a time (default 1024)
-		- skip_fetch_errors: If True, skips and logs errors received while
-		  fetching or reading image info. (default True)
 		- debug: Enable debugging
 		- boost_jpeg: Adds a scoring boost to JPG files (default 1)
 		- boost_gif: Adds a scoring boost to GIF files (default 0)
@@ -47,6 +45,8 @@ v0.2.0, 2014-12-22 --
 	- Added options to WebpageResolver
 		- significant_surface: integer of the width and height multiplied
 		  (e.g. 16 * 16) (default: 10000)
+		- skip_fetch_errors: If True, skips and logs errors received while
+		  fetching or reading image info. (default True)
 	- Added a logger "ImageResolver"
 	- Added __version__ to the module
 	- Added command line options to resolveimg.py for debugging and

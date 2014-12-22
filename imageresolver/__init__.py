@@ -7,6 +7,7 @@ javascript library by Maurice Svay
 https://github.com/mauricesvay/ImageResolver
 """
 
+from __future__ import division 
 import requests
 import re
 from urlparse import urlparse
@@ -52,7 +53,6 @@ class ImageResolver():
 		# read the entire image before trying to get its information
 		self.read_all = kwargs.get('read_all',False)
 		
-		self.skip_fetch_errors = kwargs.get('skip_fetch_errors',True)
 
 		if self.debug:
 			logger.setLevel(logging.DEBUG)
@@ -116,7 +116,7 @@ class ImageResolver():
 			return ext,width,height
 		else:
 			logger.debug('Fetch failed with status code ' + str(r.status_code))
-			raise HTTPException('Fetch image failed with status code ' + str(r.status_code)
+			raise HTTPException('Fetch image failed with status code ' + str(r.status_code))
 
 	
 	def register(self,f):
@@ -165,6 +165,7 @@ class WebpageResolver():
 		self.load_images = kwargs.get('load_images',False)
 		self.use_js_ruleset = kwargs.get('use_js_ruleset',False)
 		self.use_adblock_filters = kwargs.get('use_adblock_filters',True)
+		self.significant_surface = kwargs.get('significant_surface', 100*100)
 		
 		cwd = os.path.dirname(__file__)
 		if not cwd:
@@ -177,6 +178,7 @@ class WebpageResolver():
 		self.boost_jpeg = kwargs.get('boost_jpeg', 1)
 		self.boost_gif = kwargs.get('boost_gif', 0)
 		self.boost_png = kwargs.get('boost_png', 0)
+		self.skip_fetch_errors = kwargs.get('skip_fetch_errors',True)
 
 		if self.use_adblock_filters:
 			self.abpy_black = abpy.Filter(open(self.blacklist))
@@ -243,14 +245,17 @@ class WebpageResolver():
 		images = soup.find_all('img')
 
 		candidates = []
-		significant_surface = 16*16
-		significant_surface_count = 0
+		significant_surface = self.significant_surface
+		current_image = None
+		current_image_score = None
 		src = None
+		src_cache = {}
 
 		logger.debug('Found ' + str( len(images) ) + ' candidate images')
 
 		for i in images:
 			surface = 0
+			score = 0
 			src = i.get('src',i.get('data-src', i.get('data-lazy-src')))
 			if not src:
 				logger.debug('No source found. Skipping')
@@ -275,9 +280,19 @@ class WebpageResolver():
 
 				logger.debug('Parsed full url as ' + str(src))
 				i['src'] = src # forces setting it to whatever we found so we don't parse it in _score()
+			
+			if src_cache.get(src):
+				# skip already parsed image
+				# reduce its score if its the current image. Appearing more than
+				# once tends to be an indicator that we don't care about it
+				if src == current_image:
+					current_image_score -= 1
+				continue
+			else:
+				src_cache[src] = True
 
 			# get the score first since getting the surface is potentially more intensive now
-			score = self._score(i)
+			score += self._score(i)
 			
 			if score >= 0:
 				logger.debug('Image has a score, ' + str(score) + ' checking size')
@@ -343,27 +358,15 @@ class WebpageResolver():
 						logger.debug('No usable info from image')
 
 				if surface > significant_surface:
-					significant_surface_count += 1
+					modifier = surface // significant_surface
+					score += modifier
 				
-				candidates.append({
-					'url': src,
-					'surface': surface,
-					'score': score
-				})
+				logger.debug('%s surface: %d, score: %d' % (url,surface,score) )
 
-		if len(candidates) <= 0:
-			return None
+				if current_image_score == None or current_image_score < score:
+					current_image = src
+					current_image_score = score
 
-		# sort by surface and score if we can
-		if significant_surface_count > 0:
-			candidates = sorted( candidates, key=operator.itemgetter('surface','score'), reverse=True)
-		else:
-			candidates = sorted( candidates,key=operator.itemgetter('score'),reverse=True)
-		
-		if kwargs.get('debug'):
-			for c in candidates:
-				logger.debug(c.get('url') + ' surface: ' + str(c.get('surface')) + ' score: ' + str(c.get('score')))
+					logger.debug('Set current image %s' % url )
 
-		image = candidates[0].get('url')
-
-		return image
+		return current_image
