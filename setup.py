@@ -1,10 +1,11 @@
 from distutils.core import setup
 from distutils.sysconfig import get_python_lib
 import os
+from imageresolver import __version__
 
 setup(
 	name='ImageResolver',
-	version='0.1.5',
+	version=__version__
 	author='Chris Brown',
 	author_email='chris.brown@nwyc.com',
 	packages=['imageresolver','imageresolver.test','imageresolver.abpy'],
