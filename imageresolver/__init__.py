@@ -181,9 +181,19 @@ class WebpageResolver(object):
 		self.boost_png = kwargs.get('boost_png', 0)
 		self.skip_fetch_errors = kwargs.get('skip_fetch_errors',True)
 
+		self.abpy_black = None
+		self.abpy_white = None
+
 		if self.use_adblock_filters:
-			self.abpy_black = abpy.Filter(open(self.blacklist))
-			self.abpy_white = abpy.Filter(open(self.whitelist))
+			try:
+				self.abpy_black = abpy.Filter(open(self.blacklist))
+			except:
+				logger.warning('Unable to load black list file, %s.' % self.blacklist )
+
+			try:
+				self.abpy_white = abpy.Filter(open(self.whitelist))
+			except:
+				logger.warning('Unable to load white list file, %s.' % self.whitelist )
 
 	def _score(self,image):
 		score = 0
@@ -218,22 +228,29 @@ class WebpageResolver(object):
 
 		if self.use_adblock_filters:
 			# just detect ads using AdBlockPlus filters (default)
-			black_matches = self.abpy_black.match(src)
-			try:
-				score = len(black_matches) * -1
-			except:
-				score = 0
-
-
-			white_matches = self.abpy_white.match(src)
-
-			try:
-				score += len(white_matches)
-			except:
-				if not score:
+			no_filters = True
+			if self.abpy_black:
+				no_filters = False
+				black_matches = self.abpy_black.match(src)
+				try:
+					score = len(black_matches) * -1
+				except:
 					score = 0
 
+			if self.abpy_white:
+				no_filters = False
+				white_matches = self.abpy_white.match(src)
+
+				try:
+					score += len(white_matches)
+				except:
+					if not score:
+						score = 0
+
 			logger.debug('score set to ' + str(score) + ' using ABP filters')
+
+		if not self.use_js_ruleset and ( not self.use_adblock_filters or no_filters ):
+			logger.warning('No filters were enabled!')
 
 		return score
 
