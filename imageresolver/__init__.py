@@ -20,7 +20,6 @@ import sys
 import logging
 
 logger = logging.getLogger('ImageResolver')
-__version__ = "0.2.1"
 
 # add the vendor directories to our path
 module_path = os.path.dirname(__file__)
@@ -31,6 +30,7 @@ sys.path.append(module_path)
 
 from .abpy import abpy
 from . import getimageinfo
+from .version import __version__
 
 # raised if a resource could not be loaded
 class HTTPException(Exception):
