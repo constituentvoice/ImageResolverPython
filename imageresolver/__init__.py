@@ -20,7 +20,7 @@ import sys
 import logging
 
 logger = logging.getLogger('ImageResolver')
-__version__ = "0.2.0"
+__version__ = "0.2.1"
 
 # add the vendor directories to our path
 module_path = os.path.dirname(__file__)

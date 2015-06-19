@@ -59,3 +59,6 @@ v0.2.0, 2014-12-22 --
 		  issues
 		- Fixed URLs specified without protocol
 	- Removed README.md and moved README.txt to README.rst.
+
+v0.2.1, 2014-12-22 --
+	- fixed an oopsy in setup.py and some other minor tweaks to docs
