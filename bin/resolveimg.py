@@ -41,7 +41,7 @@ if not url:
 
 i = imageresolver.ImageResolver(**kw_options)
 i.register(imageresolver.FileExtensionResolver())
-i.register(imageresolver.ImgurPageResolver())
+i.register(imageresolver.PluginResolver())
 i.register(imageresolver.WebpageResolver(load_images=True, parser='lxml'))
 
 print i.resolve(url)

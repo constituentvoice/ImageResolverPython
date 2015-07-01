@@ -149,16 +149,22 @@ class FileExtensionResolver(object):
 
 		return None
 
-class ImgurPageResolver(object):
-	# works a little different than the JS version. 
-	# it should drop references to galleries and find the image
-	# could be buggy!
+class PluginResolver(object):
 	def resolve(self,url,**kwargs):
-		logger.debug('Resolving using Imgur ' + str(url))
-		parsed = urlparse(url)
-		if re.search( 'imgur.com(:80)*', parsed.netloc) and os.path.basename(parsed.path):
-			return 'http://i.imgur.com/' + os.path.basename(parsed.path) + '.jpg'
-
+		plugins = {}
+		path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'plugins')
+		sys.path.insert(0, path)
+		for plugin_file in os.listdir(path):
+			filename, extension = os.path.splitext(plugin_file)
+			if extension == '.py' and filename != '__init__':
+				mod = __import__(filename)
+				plugins[filename] = mod.Plugin()		
+		sys.path.pop(0)
+		
+		for plugin in plugins.values():
+			image = plugin.get_image(url)
+			if image:
+				return image
 		return None
 
 class WebpageResolver(object):

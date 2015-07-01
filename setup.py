@@ -12,7 +12,7 @@ setup(
 	version=__version__,
 	author='Chris Brown',
 	author_email='chris.brown@nwyc.com',
-	packages=['imageresolver','imageresolver.abpy'],
+	packages=['imageresolver','imageresolver.abpy','imageresolver.plugins'],
 	data_files=[(os.path.join( get_python_lib(),'imageresolver','data'),[ os.path.join('imageresolver','data','whitelist.txt') , os.path.join('imageresolver','data','blacklist.txt')])],
 	scripts=['bin/resolveimg.py'],
 	url='https://github.com/constituentvoice/ImageResolverPython',
