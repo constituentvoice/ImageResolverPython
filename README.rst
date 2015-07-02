@@ -142,7 +142,6 @@ Still missing the following resolvers:
 
 * OpengraphResolver()
 
-* InstagramResolver()
 
 I have no plans to implement a 9gag resolver.
 
