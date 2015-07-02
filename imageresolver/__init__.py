@@ -169,8 +169,8 @@ class PluginResolver(object):
 
 class WebpageResolver(object):
 	def __init__(self,**kwargs):
-		self.load_images = kwargs.get('load_images',False)
-		self.use_js_ruleset = kwargs.get('use_js_ruleset',False)
+		self.load_images = kwargs.get('load_images',True)
+		self.use_js_ruleset = kwargs.get('use_js_ruleset',True)
 		self.use_adblock_filters = kwargs.get('use_adblock_filters',True)
 		self.significant_surface = kwargs.get('significant_surface', 100*100)
 		
@@ -224,6 +224,7 @@ class WebpageResolver(object):
 				{'pattern':'1x1','score':-1},
 				{'pattern':'pixel','score':-1},
 				{'pattern':'ads','score':-1},
+				{'pattern':'transparent','score':-1}
 			]
 			
 			for r in rules:
