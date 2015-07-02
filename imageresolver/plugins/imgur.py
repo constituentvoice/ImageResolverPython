@@ -11,15 +11,26 @@ class Plugin:
 			logger = logging.getLogger('ImageResolver')
 			logger.debug('Resolving using plugin ' + str(os.path.basename(__file__)) + ' ' +  str(url))
 			parsed = urlparse(url)
-			if parsed.path[1:6] == 'gallery':
+
+			if parsed.path[1:8] == 'gallery':
+				logger.debug('Detected imgur gallery.')
 				r = requests.get(url)
 				if r.status_code == 200:
 					soup = BeautifulSoup(r.text)
-					tags = soup.find_all('div', {'id':'1','class':'album-image'})
-					for tag in tags:	
-						image = re.findall('i\.imgur.com\/.*\.\w+', str(tag))
-						if len(image) >= 1:
-							return 'http://' + image[0]
+					tag = soup.find('div', {'id':'1','class':'album-image'})
+					image = re.findall('i\.imgur.com\/.*\.\w+', str(tag))
+					if len(image) >= 1:
+						return 'http://' + image[0]
+			
+			elif parsed.path[0:3] == '/a/':
+				logger.debug('Detected imgur album.')
+				r = requests.get(url)
+				if r.status_code == 200:
+					soup = BeautifulSoup(r.text)
+					tag = soup.find('meta',{'name':'twitter:image0:src'})
+					if tag:
+						return tag['content']
+
 			else:
 				parsed = urlparse(url)
 				if re.search('imgur.com(:80)*', parsed.netloc) and os.path.basename(parsed.path):
