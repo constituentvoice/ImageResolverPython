@@ -67,3 +67,11 @@ v0.3, 2015-07-01 --
 	- Added plugin support using the PluginResolver class
 	- Created plugin directory
 	- Removed the ImgurPageResolver class, replaced with the imgur.py plugin.
+	- Added instagram, flickr plugins
+	- Changed WebResolver defaults, load_images and use_js_ruleset now default to true.
+	- Added another rule to the js_ruleset to help resolve Yahoo article images
+	- Added several command options to resolveimg.py to help with debugging and 
+	  performance testing.
+	- Fixed some bugs
+		- changed data files installation directory after installing 
+		  from setup.py
