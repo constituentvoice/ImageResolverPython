@@ -13,5 +13,6 @@ class Plugin:
 			if r.status_code == 200:
 				soup = BeautifulSoup(r.text)
 				tag = soup.find('img', {'class':'main-photo'})
-				return 'https:' + tag['src']
+				if tag:
+					return 'https:' + tag['src']
 		return None
