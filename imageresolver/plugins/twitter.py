@@ -10,7 +10,7 @@ class Plugin:
 		if re.search('http(s*):\/\/(mobile\.|m\.)*twitter.com\/[a-zA-z0-9]*\/status\/\d+', url):
 			logger = logging.getLogger('ImageResolver')
 			logger.debug('Resolving using plugin ' + str(os.path.basename(__file__)) + ' ' +  str(url))
-			parsed = urlparse(parsed)
+			parsed = urlparse(url)
 			r = requests.get(url)
 			if r.status_code == 200:
 				soup = BeautifulSoup(r.text)
@@ -22,5 +22,4 @@ class Plugin:
 				else:
 					tag = soup.find('meta',{'property':'og:image'})
 					if tag:
-						return return tag['content']
-				
+						return tag['content']
