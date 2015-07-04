@@ -129,13 +129,6 @@ By default this exception is skipped and logged but can be enabled with "skip_fe
 TODO
 -----------------
 
-Still missing the following resolvers:
-
-* OpengraphResolver()
-
-
-I have no plans to implement a 9gag resolver.
-
 Need to implement better caching. Future plan is to include a configurable cache method so images seen across sessions can be cached for better performance
 
 

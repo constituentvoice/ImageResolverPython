@@ -75,5 +75,5 @@ v0.3, 2015-07-03 --
 	- Fixed some bugs
 		- changed data files installation directory after installing 
 		  from setup.py
-
+	- Added opengraph plugin
 
