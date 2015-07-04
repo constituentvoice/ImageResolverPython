@@ -16,7 +16,6 @@ USAGE
 	try:
 		i = imageresolver.ImageResolver()
 		i.register(imageresolver.FileExtensionResolver())
-		i.register(imageresolver.PluginResolver())
 		i.register(imageresolver.WebpageResolver(load_images=True, parser='lxml',blacklist='easylist.txt'))
 		url = sys.argv[1]
 
@@ -83,13 +82,6 @@ FileExtensionResolver() METHODS
 **resolve** *(string url)*
 
 Returns the url if the extention matches a possible image
-
-PluginResolver() METHODS
----------------------------
-
-**resolve** *(string url)*
-
-Returns an Imgur image url if `url` matches the pattern of a plugin
 
 WebpageResolver() METHODS
 -------------------------
