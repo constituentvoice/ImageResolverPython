@@ -16,7 +16,10 @@ class Plugin:
 		for ogtag in ogtags:
 			tags = soup.find_all('meta', {ogtag['attribute']:ogtag['name']})
 			if tags != []:
-				ogimages = ogimages + [image[ogtag['value']] for image in tags]
+				try:
+					ogimages = ogimages + [image[ogtag['value']] for image in tags]
+				except KeyError:
+					pass
 		
 		if len(ogimages) >= 1:
 			logger = logging.getLogger('ImageResolver')
