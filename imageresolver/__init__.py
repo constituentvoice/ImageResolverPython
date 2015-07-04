@@ -149,24 +149,6 @@ class FileExtensionResolver(object):
 
 		return None
 
-class PluginResolver(object):
-	def resolve(self,url,**kwargs):
-		plugins = {}
-		path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'plugins')
-		sys.path.insert(0, path)
-		for plugin_file in os.listdir(path):
-			filename, extension = os.path.splitext(plugin_file)
-			if extension == '.py' and filename != '__init__':
-				mod = __import__(filename)
-				plugins[filename] = mod.Plugin()		
-		sys.path.pop(0)
-		
-		for plugin in plugins.values():
-			image = plugin.get_image(url)
-			if image:
-				return image
-		return None
-
 class WebpageResolver(object):
 	def __init__(self,**kwargs):
 		self.load_images = kwargs.get('load_images',True)
@@ -261,12 +243,35 @@ class WebpageResolver(object):
 
 		return score
 
+        def plugin_resolve(self,url,soup,**kwargs):
+                plugins = {}
+                path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'plugins')
+                sys.path.insert(0, path)
+                for plugin_file in os.listdir(path):
+                        filename, extension = os.path.splitext(plugin_file)
+                        if extension == '.py' and filename != '__init__':
+                                mod = __import__(filename)
+                                plugins[filename] = mod.Plugin()
+                sys.path.pop(0)
+
+                for plugin in plugins.values():
+                        image = plugin.get_image(url,soup)
+                        if image:
+                                return image
+                return None
+
+	
 	def resolve(self,url,**kwargs):
 		logger.debug('Resolving as a webpage ' + str(url))
-
 		ir = ImageResolver()
 		content = ir.fetch(url)
 		soup = BeautifulSoup(content,self.parser)
+
+		plugin_image = self.plugin_resolve(url,soup)
+
+		if plugin_image:
+			return plugin_image
+
 		images = soup.find_all('img')
 
 		candidates = []

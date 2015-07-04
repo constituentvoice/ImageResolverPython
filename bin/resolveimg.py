@@ -61,7 +61,6 @@ if options.benchmark:
 
 i = imageresolver.ImageResolver(**kw_options)
 i.register(imageresolver.FileExtensionResolver())
-i.register(imageresolver.PluginResolver())
 i.register(imageresolver.WebpageResolver(**kw_options))
 
 print i.resolve(url)
