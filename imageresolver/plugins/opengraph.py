@@ -3,6 +3,7 @@ import os
 import logging
 from bs4 import BeautifulSoup
 from operator import itemgetter
+from urlparse import urlparse, urlunparse
 
 class Plugin:
 	def get_image(self, url, soup):
@@ -32,7 +33,7 @@ class Plugin:
 			if ogimages_len == 1:
 				logger = logging.getLogger('ImageResolver')
 				logger.debug('Resolving using plugin ' + str(os.path.basename(__file__)) + ' ' +  str(url))
-				return ogimages[0]['url']
+				resolved_image = ogimages[0]['url']
 			else:
 				for image in ogimages:
 					if re.search('(large|big)', image['url'], re.IGNORECASE):
@@ -41,9 +42,14 @@ class Plugin:
 						image['score'] += 1
 
 				ogimages.sort(key=itemgetter('score'), reverse=True)
-				
-				return ogimages[0]['url']
-				
+				resolved_image = ogimages[0]['url']
+			
+			if not re.search('^https?:', resolved_image):
+				if resolved_image.startswith('//'):
+					return 'http:' + resolved_image
+			else:
+				return resolved_image	
+					
 
 		return None
 
