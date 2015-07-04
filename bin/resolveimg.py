@@ -15,15 +15,16 @@ opts.add_option("-d","--debug", action="store_true", dest="debug", help="enable 
 opts.add_option("-r","--max-read", dest="max_read",help="Set the max read size")
 opts.add_option("-c","--chunk-size",dest="chunk_size",help="Chunk size to read on each pass")
 opts.add_option("-a","--read-all",dest="read_all",help="Read the entire image before checking size. Useful for some JPGs. Overrides --max-read")
-opts.add_option("--no-adblock", action="store_true",dest="use_adblock_filters",help="Do not use whitelist.txt or blacklist.txt adblock filters")
-opts.add_option("--no-ruleset", action="store_true",dest="use_js_ruleset",help="Do not use a custom ruleset for scoring.")
+opts.add_option("-b","--adblock", action="store_true",dest="use_adblock_filters",help="Use adblock filters.")
+opts.add_option("-s","--no-ruleset", action="store_true",dest="use_js_ruleset",help="Use a custom ruleset for scoring.")
 opts.add_option("--benchmark", action="store_true",dest="benchmark",help="Benchmark the total time it takes for the script to return an image")
-opts.add_option("-l","--load-images", action="store_true",dest="load_images",help="Load images")
+opts.add_option("-n","--no-load-images", action="store_true",dest="load_images",help="Do not load images")
 opts.add_option("-p","--parser", dest="parser",help="Choose a parser to use")
 
 (options,args) = opts.parse_args()
 
 kw_options = {}
+
 if options.read_all:
 	kw_options['read_all'] = True
 elif options.max_read:
@@ -32,17 +33,17 @@ elif options.max_read:
 if options.chunk_size:
 	kw_options['chunk_size'] = int(options.chunk_size)
 
-if options.use_adblock_filters:
-	kw_options['use_adblock_filters'] = False
-
 if options.use_js_ruleset:
 	kw_options['use_js_ruleset'] = False
 
 if options.parser:
 	kw_options['parser'] = options.parser
 
+if options.load_images:
+	kw_options['load_images'] = True
+
+kw_options['use_adblock_filters'] = options.use_adblock_filters
 kw_options['debug'] = options.debug
-kw_options['load_images'] = options.load_images
 
 try:
 	url = args[0]

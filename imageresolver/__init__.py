@@ -153,7 +153,7 @@ class WebpageResolver(object):
 	def __init__(self,**kwargs):
 		self.load_images = kwargs.get('load_images',True)
 		self.use_js_ruleset = kwargs.get('use_js_ruleset',True)
-		self.use_adblock_filters = kwargs.get('use_adblock_filters',True)
+		self.use_adblock_filters = kwargs.get('use_adblock_filters',False)
 		self.significant_surface = kwargs.get('significant_surface', 100*100)
 		
 		cwd = os.path.dirname(__file__)
