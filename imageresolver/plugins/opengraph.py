@@ -3,7 +3,6 @@ import os
 import logging
 from bs4 import BeautifulSoup
 from operator import itemgetter
-from urlparse import urlparse, urlunparse
 
 class Plugin:
 	def get_image(self, url, soup):
