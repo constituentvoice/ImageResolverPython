@@ -149,23 +149,11 @@ class FileExtensionResolver(object):
 
 		return None
 
-class ImgurPageResolver(object):
-	# works a little different than the JS version. 
-	# it should drop references to galleries and find the image
-	# could be buggy!
-	def resolve(self,url,**kwargs):
-		logger.debug('Resolving using Imgur ' + str(url))
-		parsed = urlparse(url)
-		if re.search( 'imgur.com(:80)*', parsed.netloc) and os.path.basename(parsed.path):
-			return 'http://i.imgur.com/' + os.path.basename(parsed.path) + '.jpg'
-
-		return None
-
 class WebpageResolver(object):
 	def __init__(self,**kwargs):
-		self.load_images = kwargs.get('load_images',False)
-		self.use_js_ruleset = kwargs.get('use_js_ruleset',False)
-		self.use_adblock_filters = kwargs.get('use_adblock_filters',True)
+		self.load_images = kwargs.get('load_images',True)
+		self.use_js_ruleset = kwargs.get('use_js_ruleset',True)
+		self.use_adblock_filters = kwargs.get('use_adblock_filters',False)
 		self.significant_surface = kwargs.get('significant_surface', 100*100)
 		
 		cwd = os.path.dirname(__file__)
@@ -218,6 +206,7 @@ class WebpageResolver(object):
 				{'pattern':'1x1','score':-1},
 				{'pattern':'pixel','score':-1},
 				{'pattern':'ads','score':-1},
+				{'pattern':'transparent','score':-1}
 			]
 			
 			for r in rules:
@@ -254,12 +243,35 @@ class WebpageResolver(object):
 
 		return score
 
+        def plugin_resolve(self,url,soup,**kwargs):
+                plugins = {}
+                path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'plugins')
+                sys.path.insert(0, path)
+                for plugin_file in os.listdir(path):
+                        filename, extension = os.path.splitext(plugin_file)
+                        if extension == '.py' and filename != '__init__':
+                                mod = __import__(filename)
+                                plugins[filename] = mod.Plugin()
+                sys.path.pop(0)
+
+                for plugin in plugins.values():
+                        image = plugin.get_image(url,soup)
+                        if image:
+                                return image
+                return None
+
+	
 	def resolve(self,url,**kwargs):
 		logger.debug('Resolving as a webpage ' + str(url))
-
 		ir = ImageResolver()
 		content = ir.fetch(url)
 		soup = BeautifulSoup(content,self.parser)
+
+		plugin_image = self.plugin_resolve(url,soup)
+
+		if plugin_image:
+			return plugin_image
+
 		images = soup.find_all('img')
 
 		candidates = []
