@@ -3,7 +3,7 @@ import unittest
 import requests
 from os.path import dirname,abspath
 sys.path.append( dirname( dirname( dirname( abspath(__file__)) ) ) )
-from imageresolver import ImageResolver, FileExtensionResolver, ImgurPageResolver, WebpageResolver
+from imageresolver import ImageResolver, FileExtensionResolver, PluginResolver, WebpageResolver
 
 class TestImageResolver(unittest.TestCase):
 	def setUp(self):
@@ -27,13 +27,13 @@ class TestImageResolver(unittest.TestCase):
 		self.assertEquals(ext,'.png')
 		self.assertEquals(width,518)
 		self.assertEquals(height,588)
-	
-	def test_resolve_imgur(self):
+
+	def test_resolve_plugin(self):
 		i = ImageResolver()
-		i.register(ImgurPageResolver())
+		i.register(PluginResolver())
 		src = i.resolve(self.imgur_page)
 		self.assertEquals(src,self.imgur_result)
-
+	
 	def test_resolve_fileext(self):
 		i = ImageResolver()
 		i.register(FileExtensionResolver())

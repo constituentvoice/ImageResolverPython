@@ -16,7 +16,6 @@ USAGE
 	try:
 		i = imageresolver.ImageResolver()
 		i.register(imageresolver.FileExtensionResolver())
-		i.register(imageresolver.ImgurPageResolver())
 		i.register(imageresolver.WebpageResolver(load_images=True, parser='lxml',blacklist='easylist.txt'))
 		url = sys.argv[1]
 
@@ -84,13 +83,6 @@ FileExtensionResolver() METHODS
 
 Returns the url if the extention matches a possible image
 
-ImgurPageResolver() METHODS
----------------------------
-
-**resolve** *(string url)*
-
-Returns an Imgur image url if `url` matches the pattern of an Imgur page
-
 WebpageResolver() METHODS
 -------------------------
 
@@ -136,18 +128,6 @@ By default this exception is skipped and logged but can be enabled with "skip_fe
 
 TODO
 -----------------
-
-Still missing the following resolvers:
-
-* ImgurAlbumResolver()
-
-* FlickrResolver()
-
-* OpengraphResolver()
-
-* InstagramResolver()
-
-I have no plans to implement a 9gag resolver.
 
 Need to implement better caching. Future plan is to include a configurable cache method so images seen across sessions can be cached for better performance
 
