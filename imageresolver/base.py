@@ -120,7 +120,7 @@ class ImageResolver(object):
     def resolve(self, url):
         logger.debug('Attempting to resolve ' + str(url))
         for f in self.filters:
-            resp = f.resolve(url, debug=self.debug)
+            resp = f.resolve(url)
 
             # returns the first filter that gives us something
             if resp:

@@ -44,9 +44,6 @@ if options.parser:
 if options.load_images:
     kw_options['load_images'] = False
 
-if options.get_info:
-    kw_options['get_info'] = True
-
 kw_options['use_adblock_filters'] = options.use_adblock_filters
 kw_options['debug'] = options.debug
 
