@@ -19,9 +19,9 @@ USAGE
 		i.register(imageresolver.WebpageResolver(load_images=True, parser='lxml',blacklist='easylist.txt'))
 		url = sys.argv[1]
 
-		print i.resolve(url)
-	except:
-		print "An error occured"
+		print(i.resolve(url))
+	except ImageResolverError:
+		print("An error occured")
 
 Differences From the Javascript Version
 ---------------------------------------
@@ -116,6 +116,10 @@ Use the name "ImageResolver" to configure a logger. Skipped exceptions will be l
 EXCEPTIONS
 ----------
 
+**ImageResolverError**
+
+Base exception for other exceptions below.
+
 **ImageInfoException**
 
 Raised if the image could not be read or type, width or height properties return undefined. 
@@ -145,7 +149,7 @@ Probably. Send us an email or a patch if you find one
 COPYRIGHT / ACKNOWLEDGEMENTS
 ----------------------------
 
-Copyright (c) 2014 Constituent Voice, LLC.
+Copyright (c) 2020 Constituent Voice, LLC.
 
 Original idea and basic setup came from Maurice Svay https://github.com/mauricesvay/ImageResolver
 
