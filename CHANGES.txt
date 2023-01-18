@@ -87,4 +87,6 @@ v0.4.0, 2020-06-26 -- Whoa! After 5 years an update
 		- moved logic to imageresolver.base
 	- Bug fixes
 		- fixed opengraph detecting invalid images
-
+v0.4.2, 2023-01-18
+	- Bug fixes
+		- fixed version requirements failing in setup
