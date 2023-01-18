@@ -149,7 +149,7 @@ Probably. Send us an email or a patch if you find one
 COPYRIGHT / ACKNOWLEDGEMENTS
 ----------------------------
 
-Copyright (c) 2020 Constituent Voice, LLC.
+Copyright (c) 2023 Constituent Voice, LLC.
 
 Original idea and basic setup came from Maurice Svay https://github.com/mauricesvay/ImageResolver
 

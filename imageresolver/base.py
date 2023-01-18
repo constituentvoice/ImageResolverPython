@@ -1,6 +1,6 @@
 """
 ImageResolver - find a significant image in HTML
-Copyright 2020 Constituent Voice LLC
+Copyright 2023 Constituent Voice LLC
 http://constituentvoice.com/
 http://github.com/constituentvoice
 
